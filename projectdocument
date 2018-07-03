@@ -1,0 +1,215 @@
+
+SE 311 TERM PROJECT
+A CLASSROOM ALLOCATION SYSTEM
+
+
+
+
+										
+							Bekir Batuhan BAKIR - 20140601006
+				
+							Kerem Can OZCAN - 20140601039
+
+							Kerim FIGANIOGLU - 20140601026		
+              
+              
+              
+              
+              
+              
+1-	Composite Pattern
+
+“ A university campus is made of buildings. Every building houses one or more departments occupying a floor. There are classrooms on each floor.”
+
+      	-We have used Composite Pattern to reflect this hierarchical order.
+
+Participant Mapping:
+-	Component: Floor
+-	Leaf: Classroom
+-	Composite: 
+	Building
+	Campus
+-	Client: Main.cpp
+
+2-	Iterator Pattern
+
+“The classrooms are used for administrating tests. Before allocating classrooms for tests, you need to query the total number of rooms that are available for a test”
+
+-We have used Iterator Pattern to traverse through the elements in the hierarchy easily.
+	
+
+Participant Mapping:
+-	Abstract Iterator: AbstractIterator
+-	Concrete Iterator: ConcreteIterator  
+
+3-	Command Pattern
+
+- We have used Command Pattern, in classroom allocation system for each operation there needs to be a request or command, so this is why we used this pattern.
+
+Participant Mapping:
+-	Abstract Command: Command
+-	Concrete Command: 
+o	QuerryCommand
+o	UnlockCommand
+o	UnlockAllCommand
+o	CreateTestCommand
+-	Client: Main.cpp
+-	Invoker: ResourceAllocationCenter
+-	Receiver: 
+	Secretary
+	Security
+
+
+4-	Singleton Pattern
+
+-We have used Singleton Pattern because in a university there must be only one resource allocation center.
+
+Participant Mapping:
+-	Singleton: ResourceAllocationCenter
+
+
+5-	Observer Pattern
+
+“Sometimes a particular classroom that has been allocated for a test becomes available due to a cancellation or re-scheduling. In that case you want to be a notified of this change because you had already indicated beforehand that you want your test to be done in that classroom.”
+
+Participant Mapping:
+-	Abstract Subject: Subject
+-	Concrete Subject: Classroom
+-	Abstract Observer: Observer
+-	Concrete Observer: Secretary
+
+- We have used Observer Pattern to notify the secretaries of the classes when the states changed.
+
+
+
+
+Classes;
+
+Department:
+	This is a department in a university. For each department, there is assigned security and secretary.
+Floor:
+	This is a floor in a building, this is the component class of the Composite Pattern.
+
+Key Methods
+
+-virtual void DisplayAndCount(): This method declared in the Floor class. It is used in the composite classes with the collaboration of the Iterator pattern for counting the available classes while traversing through them.
+
+-virtual void AllocateALL(): This method is used for allocating all of the classrooms at once. This method works with the Iterator pattern.
+
+-virtual void EmptyAll(): This method is used for deallocating all of the classrooms at once. This method works with the Iterator pattern.
+
+-virtual void UnlockAll(): This method is used for unlocking all of the classrooms and the buildings at once. This method works with the Iterator pattern.
+
+-virtual void LockAll(): This method is used for locking all of the classrooms and the buildings at once. This method works with the Iterator pattern.
+
+-virtual void Unlock(): This method is used for unlocking the classrooms or buildings.
+		
+AbstractIterator:
+Abstract class for the Iterator pattern. This class implements the interface for its concrete iterators.
+
+Key Methods
+
+-virtual void First(): This method points to the first element of the aggregate.
+
+-virtual void Next(): This method shows the next element of the current element of the aggregate.
+
+-virtual bool IsDone(): This method returns true if the current element is also the last element of the aggregate.
+
+-virtual Floor* CurrentItem(): This method shows the current item that iterator points.
+	
+CompositeIterator:
+Composite iterators purpose is implementing the interface of the AbstractIterator class.
+	
+Subject:
+	This class is the abstact interface of the subject participant of the observer pattern.
+
+Key Methods
+
+-virtual void Attach(Secretary* secretary): This method accepts an observer as a parameter. It allows the observer to watch the changes in the subject classes.
+
+-virtual void Detach(Secretary* secretary): This method removes the attached observer from the subject object.
+
+-virtual void Notify(): When there is a change in the subject class, this method informs the observer objects that attached to the subject object.
+
+Classroom:
+	Classroom is the Leaf of the Composite pattern. This class holds the state information of the classrooms in the school. It is also Concrete Subject of the Observer pattern.
+
+Building:
+	Building is one of the Composite member of the Composite pattern. This class holds the floor and the classroom objects. Also CompositeIterator used in this class.
+
+Key Methods
+
+-void Add(Floor* f): This method add Floor and Classroom objects to the aggregate of the Building class.
+
+Campus:
+	Campus is one of the Composite member of the Composite pattern. This class holds the building objects. Also CompositeIterator used in this class.
+
+Test:
+	It is a test class that provides a generic interface for its sub classes which are RegularTest and GeneralTest. Sub classes holds a type which will be used to decide which type of allocation are going to be used.
+
+RegularTest:
+	It is sub-class of the test class.
+
+GeneralTest:
+	It is a sub-class of the test class.
+
+Command:
+	Abstact command class of the Command pattern. This class implements the interface of the concrete commands.
+
+Key Methods
+
+-virtual void Execute(): This method will be implemented in the concrete command classes.
+
+-virtual void UnExecute(): This method will do the opposite of the Execute method.
+
+Observer:
+This is abstract observer class of the observer pattern. This class declares the interface for concrete observers.
+
+Key Methods
+
+-virtual void Update(Subject* classroom): This method is for giving update information of the given Subject object to the observer Observer object.
+
+Staff:
+This class is used for base class of the different receiver classes in the system.
+
+Key Methods
+
+-virtual void Action(): This method declares the interface for the Sub receiver classes. This methods duty is to giving the knowledge of performing a certain task to the receiver.
+
+Secretary:
+This class is one of the sub classes of the Staff class. It is the most important receiver of the Command object. It knows how to operate tasks such as allocating classrooms, creating tests and unlocking classrooms.
+
+
+
+Key Methods
+
+-virtual void ActionQuerry(Campus* b): This method will show the every available class in the Campus.
+
+-virtual void ActionAllocate(Classroom* c): If the given classroom is available, this method will allocate a classroom for an exam.
+
+-virtual void ActionDeAllocate(Classroom* c): After an exam, this method will deallocate the given classroom.
+
+-virtual void ActionAllocateAll(Campus* b): This method will allocate all of the classrooms in the given Campus.
+
+-virtual void ActionDeAllocateAll(Campus* b): This method will deallocate all of the classrooms in the given Campus.
+
+Security:
+This class is one of the subclasses of the Staff class. It is duty is locking and unlocking the classrooms.
+
+QuerryCommand:
+This concrete command will show all of the available classroom numbers and the classrooms itselves.
+
+CreateTestCommand:
+This concrete command will create a Regular or General test. The allocation method will be decided automatically based on the type of the exam.
+
+UnlockCommand:
+This concrete command will unlock the classrooms and building if those classrooms and buildings are locked.
+
+UnlockAllCommand:
+This concrete command will unlock all of the classrooms and the building in the campus.
+
+ResourceAllocationCenter:
+This class is the invoker class from the Command Pattern. This class is also Singleton as there must be only one Resource Allocation Center for a university.
+
+
+
